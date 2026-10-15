@@ -11,11 +11,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updating new changes for next version
 
+## [v4]
+
+### Added - Added Changelog
+
+- Added version tags
+- Added Changelog docs connecting to the tags
+
 ## [v3]
 
-### Added
+### Added - Added todo CRUD
 
-- Connect to sqlite database .
+- Connect to sqlite database
 - Create todo model
 - Crud operation added for todo with pydantic
 - Tested with swagger docs
@@ -23,18 +30,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v2]
 
-### Added
+### Added - Added package requirement
 
 - Added requirements.txt which contains package required info.
 - Added basic README file
 
-## [v1]
+## [v1] - Started Working
 
 ### Added
 
 - Initial Commit
 
-[unreleased]: https://github.com/deepak0023/fastapi/compare/v3...HEAD
+[unreleased]: https://github.com/deepak0023/fastapi/compare/v4...HEAD
+[v4]: https://github.com/deepak0023/fastapi/compare/v3...v4
 [v3]: https://github.com/deepak0023/fastapi/compare/v2...v3
 [v2]: https://github.com/deepak0023/fastapi/compare/v1...v2
 [v1]: https://github.com/deepak0023/fastapi/releases/tag/v1
