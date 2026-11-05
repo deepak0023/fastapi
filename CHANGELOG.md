@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updating new changes for next version
 
+## [v5]
+
+### Restructuring - Add support for multiple router files
+
+- Have separate file for todo api router file
+- Include them into main file so that the main file could support multiple router files
+- Retest the code with inbuilt swagger docs
+
 ## [v4]
 
 ### Added - Added Changelog
@@ -41,7 +49,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial Commit
 
-[unreleased]: https://github.com/deepak0023/fastapi/compare/v4...HEAD
+[unreleased]: https://github.com/deepak0023/fastapi/compare/v5...HEAD
+[v5]: https://github.com/deepak0023/fastapi/compare/v4...v5
 [v4]: https://github.com/deepak0023/fastapi/compare/v3...v4
 [v3]: https://github.com/deepak0023/fastapi/compare/v2...v3
 [v2]: https://github.com/deepak0023/fastapi/compare/v1...v2
