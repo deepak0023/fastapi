@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Path
-from models import Todos
+from models.todos import Todos
 from database import SessionLocal
 from typing import Annotated
 from sqlalchemy.orm import Session

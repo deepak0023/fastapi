@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from models import Users
+from models.users import Users
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from database import SessionLocal
