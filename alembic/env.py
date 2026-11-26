@@ -7,6 +7,7 @@ from alembic import context
 
 from models.users import Users
 from models.todos import Todos
+from models.roles import Roles
 from database import Base
 
 # this is the Alembic Config object, which provides
