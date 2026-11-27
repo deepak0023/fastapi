@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Path
 from models.users import Users
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict, model_validator
 from sqlalchemy.orm import Session
 from database import SessionLocal
 from typing import Annotated, Literal
@@ -19,6 +19,39 @@ class UpdateRoleRequest(BaseModel):
     role: Literal ["User", "Admin"] = Field (
         description="Role name must be either 'Admin' or 'User'.",
     )
+
+class UserResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    email: str
+    username: str
+    first_name: str
+    last_name: str
+    is_active: bool
+    role: Literal["ADMIN", "USER"] | str
+
+    @model_validator(mode="before")
+    @classmethod
+    def map_role_from_id(cls, data):
+        # Handle SQLAlchemy ORM instances
+        if not isinstance(data, dict):
+            role_id = getattr(data, "role_id", None)
+            try:
+                role_name = UserRole(role_id).name if role_id is not None else "UNKNOWN"
+            except ValueError:
+                role_name = str(role_id)
+
+            return {
+                "id": data.id,
+                "email": data.email,
+                "username": data.username,
+                "first_name": data.first_name,
+                "last_name": data.last_name,
+                "is_active": data.is_active,
+                "role": role_name.capitalize(),
+            }
+        return data
 
 # Get db connection for CRUD operation
 def get_db():
@@ -54,7 +87,7 @@ async def create_user(db: db_dependency, user:user_dependency, update_user_role_
     db.commit()
 
 # user role update
-@router.patch('/user_list', status_code=status.HTTP_200_OK)
+@router.patch('/user_list', status_code=status.HTTP_200_OK, response_model=list[UserResponse])
 async def create_user(db: db_dependency, user:user_dependency):
     # Update user role
     if user is None:
