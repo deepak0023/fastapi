@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, Path
-from models import Todos
+from models.todos import Todos
 from database import SessionLocal
 from typing import Annotated
 from sqlalchemy.orm import Session
 from starlette import status
 from pydantic import BaseModel, Field
 from .auth import get_current_user
+from enums.roles import UserRole
 
 # Get fastapi instance
 router = APIRouter()
@@ -33,7 +34,7 @@ async def read_all(db: db_dependency, user: user_dependency):
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication failed")
     # Fetch all todo records pertaining to owner/user id except admin
-    if user.get('user_role') == 'admin':
+    if user.get('user_role') == UserRole.ADMIN.name:
         return db.query(Todos).all()
     else:
         return db.query(Todos).filter(Todos.owner_id == user.get('user_id')).all()
@@ -44,7 +45,7 @@ async def read_todo(db: db_dependency, user: user_dependency, todo_id: int = Pat
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication failed")
     # Fetch specific todo record pertaining to the user/owner except admin
-    if user.get('user_role') == 'admin':
+    if user.get('user_role') == UserRole.ADMIN.name:
         todo_model = db.query(Todos).filter(Todos.id == todo_id).first()
     else:
         todo_model = db.query(Todos).filter(Todos.id == todo_id).filter(Todos.owner_id == user.get('user_id')).first()
@@ -68,7 +69,7 @@ async def update_todo(db: db_dependency, todo_request: TodoRequest, user:user_de
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication failed")
     # Get the required todo record pertaing to the user/owner except admin
-    if user.get('user_role') == 'admin':
+    if user.get('user_role') == UserRole.ADMIN.name:
         todo_model = db.query(Todos).filter(Todos.id == todo_id).first()
     else:
         todo_model = db.query(Todos).filter(Todos.id == todo_id).filter(Todos.owner_id == user.get("user_id")).first()
@@ -88,7 +89,7 @@ async def delete_todo(db: db_dependency, user:user_dependency, todo_id: int = Pa
     if user is None:
         raise HTTPException(status_code=401, detail="Authentication failed")
     # Get the required todo records pertaining to the user/owner except admin
-    if user.get('user_role') == 'admin':
+    if user.get('user_role') == UserRole.ADMIN.name:
         todo_model = db.query(Todos).filter(Todos.id == todo_id).first()
     else:
         todo_model = db.query(Todos).filter(Todos.id == todo_id).filter(Todos.owner_id == user.get("user_id")).first()
