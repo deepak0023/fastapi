@@ -48,15 +48,6 @@ def get_db():
 
 db_dependency = Annotated[Session, Depends(get_db)]
 
-def get_role_id(role_name: str):
-    match role_name:
-        case UserRole.ADMIN.name:
-            return 1
-        case UserRole.USER.name:
-            return 2
-        case _:
-            raise HTTPException(status_code=404, detail='Invalid user Role')
-
 # user signin / add user
 @router.post('/signin', status_code=status.HTTP_201_CREATED)
 async def create_user(db: db_dependency,
@@ -66,7 +57,7 @@ async def create_user(db: db_dependency,
         username= create_user_request.username,
         first_name= create_user_request.first_name,
         last_name= create_user_request.last_name,
-        role_id= get_role_id(create_user_request.role.upper()),
+        role_id= UserRole.USER.value,
         hashed_password= bcrypt_context.hash(create_user_request.password),
         is_active=True
     )
