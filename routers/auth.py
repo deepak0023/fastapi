@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from models.users import Users
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 from database import SessionLocal
-from typing import Annotated
+from typing import Annotated, Literal
 from passlib.context import CryptContext
 from starlette import status
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
@@ -30,7 +30,9 @@ class CreateUserRequest(BaseModel):
     first_name: str
     last_name: str
     password: str
-    role_id: int
+    role: Literal ["User", "Admin"] = Field (
+        description="Role name must be either 'Admin' or 'User'.",
+    )
 
 class Token(BaseModel):
     access_token: str
@@ -46,17 +48,25 @@ def get_db():
 
 db_dependency = Annotated[Session, Depends(get_db)]
 
+def get_role_id(role_name: str):
+    match role_name:
+        case UserRole.ADMIN.name:
+            return 1
+        case UserRole.USER.name:
+            return 2
+        case _:
+            raise HTTPException(status_code=404, detail='Invalid user Role')
+
 # user signin / add user
 @router.post('/signin', status_code=status.HTTP_201_CREATED)
 async def create_user(db: db_dependency,
                       create_user_request: CreateUserRequest):
-    print(create_user_request.role_id);
     create_user_model = Users(
         email= create_user_request.email,
         username= create_user_request.username,
         first_name= create_user_request.first_name,
         last_name= create_user_request.last_name,
-        role_id= create_user_request.role_id,
+        role_id= get_role_id(create_user_request.role.upper()),
         hashed_password= bcrypt_context.hash(create_user_request.password),
         is_active=True
     )
