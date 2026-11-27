@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from database import engine
-from routers import todos, auth
+from routers import todos, auth, admin
 
 # Get fastapi instance
 app = FastAPI()
@@ -10,3 +10,4 @@ app = FastAPI()
 
 app.include_router(todos.router)
 app.include_router(auth.router)
+app.include_router(admin.router)
