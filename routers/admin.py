@@ -52,3 +52,13 @@ async def create_user(db: db_dependency, user:user_dependency, update_user_role_
     user.role_id = get_role_id(update_user_role_request.role.upper())
     db.add(user)
     db.commit()
+
+# user role update
+@router.patch('/user_list', status_code=status.HTTP_200_OK)
+async def create_user(db: db_dependency, user:user_dependency):
+    # Update user role
+    if user is None:
+        raise HTTPException(status_code=401, detail="Authentication failed")
+    if user.get('user_role') != UserRole.ADMIN.name:
+        raise HTTPException(status_code=403, detail="Only admin can access user list, contact admin !!")
+    return db.query(Users).all()
